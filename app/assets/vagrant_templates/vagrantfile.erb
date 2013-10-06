@@ -24,6 +24,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
   <% end %>
 
+  # Apt-get update
+  config.vm.provision :shell, inline: "sudo apt-get update"
+
   # Bash scripts
   <% if !bashes.nil? and !bashes.empty? %>
   	<% for bash in bashes %>

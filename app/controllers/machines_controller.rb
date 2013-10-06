@@ -61,7 +61,9 @@ class MachinesController < ApplicationController
   # DELETE /machines/1
   # DELETE /machines/1.json
   def destroy
-    FileUtils.rm_rf(Rails.root.join("vms", "#{@machine.id}"))
+    path = Rails.root.join("vms", "#{@machine.id}")
+    output = `cd #{path}; vagrant destroy -f`
+    FileUtils.rm_rf(path)
     @machine.destroy
     respond_to do |format|
       format.html { redirect_to machines_url }
