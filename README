@@ -1,6 +1,8 @@
 Vaas Git
 ========================
 
+This is a deployment automation rails application built on top of Vagrant. 
+
 This application was generated with the rails_apps_composer gem:
 https://github.com/RailsApps/rails_apps_composer
 provided by the RailsApps Project:
