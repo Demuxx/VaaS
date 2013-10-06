@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyText
+  box_id: 
+  network_id: 
+  key_id: 
+  status_id: 
+
+two:
+  name: MyString
+  description: MyText
+  box_id: 
+  network_id: 
+  key_id: 
+  status_id: 

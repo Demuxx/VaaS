@@ -1,0 +1,29 @@
+<h1>Listing bashes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>File</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bashes.each do |bash| %>
+      <tr>
+        <td><%= bash.name %></td>
+        <td><%= bash.file %></td>
+        <td><%= link_to 'Show', bash %></td>
+        <td><%= link_to 'Edit', edit_bash_path(bash) %></td>
+        <td><%= link_to 'Destroy', bash, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Bash', new_bash_path %>

@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Bash:</strong>
+  <%= @bash_machine.bash %>
+</p>
+
+<p>
+  <strong>Machine:</strong>
+  <%= @bash_machine.machine %>
+</p>
+
+<%= link_to 'Edit', edit_bash_machine_path(@bash_machine) %> |
+<%= link_to 'Back', bash_machines_path %>

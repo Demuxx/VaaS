@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Chef:</strong>
+  <%= @chef_machine.chef %>
+</p>
+
+<p>
+  <strong>Machine:</strong>
+  <%= @chef_machine.machine %>
+</p>
+
+<%= link_to 'Edit', edit_chef_machine_path(@chef_machine) %> |
+<%= link_to 'Back', chef_machines_path %>

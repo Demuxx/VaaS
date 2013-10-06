@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @bash.name %>
+</p>
+
+<p>
+  <strong>File:</strong>
+  <%= @bash.file %>
+</p>
+
+<%= link_to 'Edit', edit_bash_path(@bash) %> |
+<%= link_to 'Back', bashes_path %>

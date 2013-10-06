@@ -1,0 +1,47 @@
+<h1>Listing machines</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Box</th>
+      <th>Network</th>
+      <th>Key</th>
+      <th>Status</th>
+      <th>Port</th>
+	  <th>Bashes</th>
+	  <th>Chefs</th>
+	  <th>Puppets</th>
+	  <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @machines.each do |machine| %>
+      <% status = machine.get_status %>
+      <tr>
+        <td><%= machine.name %></td>
+        <td><%= machine.description %></td>
+        <td><%= machine.box.name %></td>
+        <td><%= machine.network.name %></td>
+        <td><%= machine.key.name %></td>
+        <td bgcolor="<%= status.color %>"><%= link_to status.name, toggle_machine_path(machine), :method => :get %></td>
+        <td><%= machine.get_port %></td>
+		<td><%= machine.bashes.count %></td>
+		<td><%= machine.chefs.count %></td>
+		<td><%= machine.puppets.count %></td>
+        <td><%= link_to 'Show', machine %></td>
+        <td><%= link_to 'Edit', edit_machine_path(machine) %></td>
+        <td><%= link_to 'Destroy', machine, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Machine', new_machine_path %>

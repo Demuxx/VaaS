@@ -1,0 +1,29 @@
+<h1>Listing bash_machines</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bash</th>
+      <th>Machine</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bash_machines.each do |bash_machine| %>
+      <tr>
+        <td><%= bash_machine.bash %></td>
+        <td><%= bash_machine.machine %></td>
+        <td><%= link_to 'Show', bash_machine %></td>
+        <td><%= link_to 'Edit', edit_bash_machine_path(bash_machine) %></td>
+        <td><%= link_to 'Destroy', bash_machine, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Bash machine', new_bash_machine_path %>

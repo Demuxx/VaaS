@@ -1,0 +1,33 @@
+<h1>Listing puppet_facts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Key</th>
+      <th>Value</th>
+      <th>Puppet</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @puppet_facts.each do |puppet_fact| %>
+      <tr>
+        <td><%= puppet_fact.name %></td>
+        <td><%= puppet_fact.key %></td>
+        <td><%= puppet_fact.value %></td>
+        <td><%= puppet_fact.puppet %></td>
+        <td><%= link_to 'Show', puppet_fact %></td>
+        <td><%= link_to 'Edit', edit_puppet_fact_path(puppet_fact) %></td>
+        <td><%= link_to 'Destroy', puppet_fact, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Puppet fact', new_puppet_fact_path %>

@@ -1,0 +1,29 @@
+<h1>Listing keys</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Private</th>
+      <th>Public</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @keys.each do |key| %>
+      <tr>
+        <td><%= key.name %></td>
+        <td><a href="data:text/plain;base64,<%= Base64.encode64(key.private) %>">Download</a></td>
+        <td><%= link_to "Display", "#", data: { confirm: key.public } %></td>
+        <td><%= link_to 'Show', key %></td>
+        <td><%= link_to 'Destroy', key, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Key', new_key_path %>

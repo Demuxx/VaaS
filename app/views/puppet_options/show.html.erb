@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @puppet_option.name %>
+</p>
+
+<p>
+  <strong>Option:</strong>
+  <%= @puppet_option.option %>
+</p>
+
+<p>
+  <strong>Puppet:</strong>
+  <%= @puppet_option.puppet %>
+</p>
+
+<%= link_to 'Edit', edit_puppet_option_path(@puppet_option) %> |
+<%= link_to 'Back', puppet_options_path %>

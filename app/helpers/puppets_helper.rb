@@ -1,0 +1,2 @@
+module PuppetsHelper
+end

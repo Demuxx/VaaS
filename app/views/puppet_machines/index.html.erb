@@ -1,0 +1,29 @@
+<h1>Listing puppet_machines</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Puppet</th>
+      <th>Machine</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @puppet_machines.each do |puppet_machine| %>
+      <tr>
+        <td><%= puppet_machine.puppet %></td>
+        <td><%= puppet_machine.machine %></td>
+        <td><%= link_to 'Show', puppet_machine %></td>
+        <td><%= link_to 'Edit', edit_puppet_machine_path(puppet_machine) %></td>
+        <td><%= link_to 'Destroy', puppet_machine, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Puppet machine', new_puppet_machine_path %>

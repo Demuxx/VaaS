@@ -1,0 +1,31 @@
+<h1>Listing chefs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Cookbook File Name</th>
+      <th>Databag File Name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @chefs.each do |chef| %>
+      <tr>
+        <td><%= chef.name %></td>
+        <td><%= chef.cookbook_name %></td>
+        <td><%= chef.databag_name %></td>
+        <td><%= link_to 'Show', chef %></td>
+        <td><%= link_to 'Edit', edit_chef_path(chef) %></td>
+        <td><%= link_to 'Destroy', chef, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Chef', new_chef_path %>

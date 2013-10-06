@@ -1,0 +1,29 @@
+<h1>Listing chef_machines</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Chef</th>
+      <th>Machine</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @chef_machines.each do |chef_machine| %>
+      <tr>
+        <td><%= chef_machine.chef %></td>
+        <td><%= chef_machine.machine %></td>
+        <td><%= link_to 'Show', chef_machine %></td>
+        <td><%= link_to 'Edit', edit_chef_machine_path(chef_machine) %></td>
+        <td><%= link_to 'Destroy', chef_machine, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Chef machine', new_chef_machine_path %>

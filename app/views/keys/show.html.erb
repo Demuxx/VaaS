@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @key.name %>
+</p>
+
+<p>
+  <strong>Private:</strong>
+ <a href="data:text/plain;base64,<%= Base64.encode64(@key.private) %>">Download</a> 
+</p>
+
+<p>
+  <strong>Public:</strong>
+  <%= link_to "Display", "#", data: { confirm: @key.public } %>
+</p>
+
+<%= link_to 'Back', keys_path %>

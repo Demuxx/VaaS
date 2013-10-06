@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Puppet:</strong>
+  <%= @puppet_machine.puppet %>
+</p>
+
+<p>
+  <strong>Machine:</strong>
+  <%= @puppet_machine.machine %>
+</p>
+
+<%= link_to 'Edit', edit_puppet_machine_path(@puppet_machine) %> |
+<%= link_to 'Back', puppet_machines_path %>

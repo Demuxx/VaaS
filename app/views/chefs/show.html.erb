@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @chef.name %>
+</p>
+
+<p>
+  <strong>Cookbook File Name:</strong>
+  <%= @chef.cookbook_name %>
+</p>
+
+<p>
+  <strong>Databag File Name:</strong>
+  <%= @chef.databag_name %>
+</p>
+
+<%= link_to 'Edit', edit_chef_path(@chef) %> |
+<%= link_to 'Back', chefs_path %>

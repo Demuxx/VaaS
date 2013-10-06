@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @puppet_fact.name %>
+</p>
+
+<p>
+  <strong>Key:</strong>
+  <%= @puppet_fact.key %>
+</p>
+
+<p>
+  <strong>Value:</strong>
+  <%= @puppet_fact.value %>
+</p>
+
+<p>
+  <strong>Puppet:</strong>
+  <%= @puppet_fact.puppet %>
+</p>
+
+<%= link_to 'Edit', edit_puppet_fact_path(@puppet_fact) %> |
+<%= link_to 'Back', puppet_facts_path %>

@@ -1,0 +1,31 @@
+<h1>Listing puppet_options</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Option</th>
+      <th>Puppet</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @puppet_options.each do |puppet_option| %>
+      <tr>
+        <td><%= puppet_option.name %></td>
+        <td><%= puppet_option.option %></td>
+        <td><%= puppet_option.puppet %></td>
+        <td><%= link_to 'Show', puppet_option %></td>
+        <td><%= link_to 'Edit', edit_puppet_option_path(puppet_option) %></td>
+        <td><%= link_to 'Destroy', puppet_option, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Puppet option', new_puppet_option_path %>

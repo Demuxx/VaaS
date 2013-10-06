@@ -1,0 +1,14 @@
+<%= simple_form_for(@puppet_fact) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <%= f.input :key %>
+    <%= f.input :value %>
+    <%= f.association :puppet %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

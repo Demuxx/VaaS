@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  manifest_path: MyString
+  modules_path: MyString
+  manifest_file: 
+
+two:
+  name: MyString
+  manifest_path: MyString
+  modules_path: MyString
+  manifest_file: 

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  puppet_id: 
+  machine_id: 
+
+two:
+  puppet_id: 
+  machine_id: 

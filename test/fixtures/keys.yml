@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  private: MyString
+  public: MyString
+
+two:
+  private: MyString
+  public: MyString

@@ -1,0 +1,2 @@
+module PuppetMachinesHelper
+end

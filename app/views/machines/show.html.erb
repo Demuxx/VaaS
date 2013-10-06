@@ -1,0 +1,64 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @machine.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @machine.description %>
+</p>
+
+<p>
+  <strong>Box:</strong>
+  <%= @machine.box.name %>
+</p>
+
+<p>
+  <strong>Network:</strong>
+  <%= @machine.network.name %>
+</p>
+
+<p>
+  <strong>Key:</strong>
+  <%= @machine.key.name %>
+</p>
+
+<p>
+  <strong>Bashes:</strong>
+  <% for bash in @machine.bashes %>
+	<p>
+		<strong>Name:</strong>
+		<%= bash.name %>
+	</p>
+  <% end %>
+</p>
+
+<p>
+  <strong>Chefs:</strong>
+  <% for chef in @machine.chefs %>
+	<p>
+		<strong>Name:</strong>
+		<%= chef.name %>
+	</p>
+  <% end %>
+</p>
+
+<p>
+  <strong>Puppets:</strong>
+  <% for puppet in @machine.puppets %>
+	<p>
+		<strong>Name:</strong>
+		<%= puppet.name %>
+	</p>
+  <% end %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @machine.get_status.name %>
+</p>
+
+<%= link_to 'Edit', edit_machine_path(@machine) %> |
+<%= link_to 'Back', machines_path %>

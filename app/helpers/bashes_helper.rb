@@ -1,0 +1,2 @@
+module BashesHelper
+end

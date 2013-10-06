@@ -1,0 +1,15 @@
+<%= simple_form_for(@chef, html: {multipart: true}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :name %>
+	<%= f.label :tarbal, "Zipped chef cookbook" %>
+    <%= f.file_field :tarbal, :required => true %>
+	<%= f.label :databag %>
+    <%= f.file_field :databag %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

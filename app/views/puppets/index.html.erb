@@ -1,0 +1,33 @@
+<h1>Listing puppets</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Manifest path</th>
+      <th>Modules path</th>
+      <th>Manifest file</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @puppets.each do |puppet| %>
+      <tr>
+        <td><%= puppet.name %></td>
+        <td><%= puppet.manifest_path %></td>
+        <td><%= puppet.modules_path %></td>
+        <td><%= puppet.manifest_file %></td>
+        <td><%= link_to 'Show', puppet %></td>
+        <td><%= link_to 'Edit', edit_puppet_path(puppet) %></td>
+        <td><%= link_to 'Destroy', puppet, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Puppet', new_puppet_path %>
