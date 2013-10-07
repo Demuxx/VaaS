@@ -1,0 +1,2 @@
+module ChefJsonsHelper
+end

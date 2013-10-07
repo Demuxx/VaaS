@@ -1,0 +1,31 @@
+<h1>Listing chef_jsons</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Chef</th>
+      <th>Key</th>
+      <th>Value</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @chef_jsons.each do |chef_json| %>
+      <tr>
+        <td><%= chef_json.chef %></td>
+        <td><%= chef_json.key %></td>
+        <td><%= chef_json.value %></td>
+        <td><%= link_to 'Show', chef_json %></td>
+        <td><%= link_to 'Edit', edit_chef_json_path(chef_json) %></td>
+        <td><%= link_to 'Destroy', chef_json, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Chef json', new_chef_json_path %>

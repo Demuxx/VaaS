@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131006050819) do
+ActiveRecord::Schema.define(version: 20131006231317) do
 
   create_table "bash_machines", force: true do |t|
     t.integer  "bash_id"
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(version: 20131006050819) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "chef_jsons", force: true do |t|
+    t.integer  "chef_id"
+    t.string   "key"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "chef_jsons", ["chef_id"], name: "index_chef_jsons_on_chef_id"
 
   create_table "chef_machines", force: true do |t|
     t.integer  "chef_id"
@@ -79,6 +89,7 @@ ActiveRecord::Schema.define(version: 20131006050819) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "port"
+    t.text     "log"
   end
 
   add_index "machines", ["box_id"], name: "index_machines_on_box_id"

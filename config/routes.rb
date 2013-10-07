@@ -1,9 +1,12 @@
 VaasGit::Application.routes.draw do
+  resources :chef_jsons
+
   resources :statuses
 
   resources :machines do
     member do
       get 'toggle'
+      get 'provision'
     end
   end
 

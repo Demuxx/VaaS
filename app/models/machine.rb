@@ -44,40 +44,49 @@ class Machine < ActiveRecord::Base
 
   def vagrant_init
     path = Rails.root.join("vms", "#{self.id}")
-    FileUtils.remove_dir(path) if File.directory?(path)
     FileUtils.mkdir_p(path)
-    command = `cd #{path}; vagrant init #{self.box.name} #{self.box.url}`
-    raise "Init command failed!" if !command
+    spawn("cd #{path}; vagrant init #{self.box.name} #{self.box.url}", :out=>[self.log, "w"])
+    #raise "Init command failed!" if !command
   end
 
   def generate_vagrant
     create_vagrant_file(self)
     dst = Rails.root.join("vms", "#{self.id}")
-    
+
     for bash in self.bashes
       copy_and_unzip(bash.file_path, dst.join("bashes"))
     end
-    
+
     for chef in self.chefs
       copy_and_unzip(chef.cookbook_path, dst.join("cookbooks"))
       copy_and_unzip(chef.databag_path, dst.join("data_bags")) if !chef.databag_path.nil?
     end
-    
+
     for puppet in self.puppets
       copy_and_unzip(puppet.manifest_path, dst.join("manifests"))
     end
   end
-  
+
   def up
     path = Rails.root.join("vms", "#{self.id}")
-    output = spawn("cd #{path}; vagrant up")
+    output = spawn("cd #{path}; vagrant up --no-provision", :out=>[self.log, "w"])
   end
-  
+
   def suspend
     path = Rails.root.join("vms", "#{self.id}")
-    output = spawn("cd #{path}; vagrant suspend")
+    output = spawn("cd #{path}; vagrant suspend", :out=>[self.log, "w"])
   end
-      
+
+  def provision
+    path = Rails.root.join("vms", "#{self.id}")
+    output = spawn("cd #{path}; vagrant provision", :out=>[self.log, "w"])
+  end
+
+  def up_provision
+    path = Rails.root.join("vms", "#{self.id}")
+    output = spawn("cd #{path}; vagrant up --provision", :out=>[self.log, "w"])
+  end
+
   private
   def create_vagrant_file(machine)
     template = File.open(Rails.root.join('app', 'assets', 'vagrant_templates', 'vagrantfile.erb'))
@@ -94,7 +103,7 @@ class Machine < ActiveRecord::Base
       f.write erb.result( binding )
     end
   end
-  
+
   def copy_and_unzip(src, dst)
     FileUtils.mkdir_p(dst)
     if !/\.zip$/.match(src).nil?

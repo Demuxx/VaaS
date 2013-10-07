@@ -1,5 +1,5 @@
 class MachinesController < ApplicationController
-  before_action :set_machine, only: [:show, :edit, :update, :destroy, :toggle]
+  before_action :set_machine, only: [:show, :edit, :update, :destroy, :toggle, :provision]
 
   # GET /machines
   # GET /machines.json
@@ -28,10 +28,16 @@ class MachinesController < ApplicationController
 
     respond_to do |format|
       if @machine.save
+        path = Rails.root.join("vms", "#{@machine.id}")
+        FileUtils.remove_dir(path) if File.directory?(path)
+        logs_path = Rails.root.join("vms", "#{@machine.id}", "logs")
+        FileUtils.mkdir_p(logs_path)
+        @machine.log = File.open(logs_path.join(Time.now.to_s), "w")
+        @machine.log.close
         @machine.vagrant_init
         @machine.generate_vagrant
         @machine.up
-        
+
         format.html { redirect_to @machine, notice: 'Machine was successfully created.' }
         format.json { render action: 'show', status: :created, location: @machine }
       else
@@ -46,9 +52,12 @@ class MachinesController < ApplicationController
   def update
     respond_to do |format|
       if @machine.update(machine_params)
+        logs_path = Rails.root.join("vms", "#{@machine.id}", "logs")
+        @machine.log = File.open(logs_path.join(Time.now.to_s), "w")
         @machine.vagrant_init
         @machine.generate_vagrant
-        
+        @machine.log.close
+
         format.html { redirect_to @machine, notice: 'Machine was successfully updated.' }
         format.json { head :no_content }
       else
@@ -62,7 +71,7 @@ class MachinesController < ApplicationController
   # DELETE /machines/1.json
   def destroy
     path = Rails.root.join("vms", "#{@machine.id}")
-    output = `cd #{path}; vagrant destroy -f`
+    `cd #{path}; vagrant destroy -f`
     FileUtils.rm_rf(path)
     @machine.destroy
     respond_to do |format|
@@ -70,13 +79,30 @@ class MachinesController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   def toggle
+    logs_path = Rails.root.join("vms", "#{@machine.id}", "logs")
+    @machine.log = File.open(logs_path.join(Time.now.to_s), "w")
     if @machine.get_status != Status.where(name: "Up").first
       @machine.up
     else
       @machine.suspend
     end
+    @machine.log.close
+    redirect_to action: 'index', status: :moved_permanently
+  end
+
+  def provision
+    logs_path = Rails.root.join("vms", "#{@machine.id}", "logs")
+    @machine.log = File.open(logs_path.join(Time.now.to_s), "w")
+    @machine.status = @machine.get_status
+    @machine.save!
+    if @machine.status != Status.where(name: "Up").first
+      @machine.up_provision
+    else
+      @machine.provision
+    end
+    @machine.log.close
     redirect_to action: 'index', status: :moved_permanently
   end
 

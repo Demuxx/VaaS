@@ -1,0 +1,13 @@
+<%= simple_form_for(@chef_json) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :chef %>
+    <%= f.input :key %>
+    <%= f.input :value %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

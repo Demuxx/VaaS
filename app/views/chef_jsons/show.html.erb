@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Chef:</strong>
+  <%= @chef_json.chef %>
+</p>
+
+<p>
+  <strong>Key:</strong>
+  <%= @chef_json.key %>
+</p>
+
+<p>
+  <strong>Value:</strong>
+  <%= @chef_json.value %>
+</p>
+
+<%= link_to 'Edit', edit_chef_json_path(@chef_json) %> |
+<%= link_to 'Back', chef_jsons_path %>

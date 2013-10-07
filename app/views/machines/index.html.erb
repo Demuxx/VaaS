@@ -22,18 +22,18 @@
 
   <tbody>
     <% @machines.each do |machine| %>
-      <% status = machine.get_status %>
       <tr>
         <td><%= machine.name %></td>
         <td><%= machine.description %></td>
         <td><%= machine.box.name %></td>
         <td><%= machine.network.name %></td>
         <td><%= machine.key.name %></td>
-        <td bgcolor="<%= status.color %>"><%= link_to status.name, toggle_machine_path(machine), :method => :get %></td>
-        <td><%= machine.get_port %></td>
+        <td bgcolor="<%= machine.status.color %>"><%= link_to machine.status.name, toggle_machine_path(machine), :method => :get %></td>
+        <td><%= machine.port %></td>
 		<td><%= machine.bashes.count %></td>
 		<td><%= machine.chefs.count %></td>
 		<td><%= machine.puppets.count %></td>
+		<td><%= link_to "Provision", provision_machine_path(machine) %></td>
         <td><%= link_to 'Show', machine %></td>
         <td><%= link_to 'Edit', edit_machine_path(machine) %></td>
         <td><%= link_to 'Destroy', machine, method: :delete, data: { confirm: 'Are you sure?' } %></td>

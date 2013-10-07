@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Private key pinning
   <% if !key.nil? and !key.empty? %>
-  config.vm.provision "shell", inline: "echo '<%= key %>' > /home/vagrant/.ssh/authorized_keys"
+  config.vm.provision "shell", inline: "echo '<%= key %>' >> /home/vagrant/.ssh/authorized_keys"
   <% end %>
 
   # Chef provisioning
@@ -55,6 +55,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	chef.add_recipe "<%= c.cookbook_name.gsub(/\.zip$/, "") %>"
 	  <% if !c.databag_name.nil? and !c.databag_name.empty? %>
 	chef.data_bags_path = "data_bags"
+	  <% end %>
+	  <% if !c.chef_jsons.empty? %>
+	chef.json = {
+	  "<%= c.cookbook_name.gsub(/\.zip$/, "") %>" => {
+	    <%= c.chef_jsons.map {|j| "\""+j.key+"\" => \""+j.value+"\""}.join(",\n") %>
+	  }
+	}
 	  <% end %>
 	<% end %>
   end
