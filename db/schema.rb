@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131006231317) do
+ActiveRecord::Schema.define(version: 20131007232433) do
 
   create_table "bash_machines", force: true do |t|
     t.integer  "bash_id"
@@ -79,6 +79,16 @@ ActiveRecord::Schema.define(version: 20131006231317) do
     t.string   "public_path"
   end
 
+  create_table "logs", force: true do |t|
+    t.string   "name"
+    t.string   "path"
+    t.integer  "machine_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "logs", ["machine_id"], name: "index_logs_on_machine_id"
+
   create_table "machines", force: true do |t|
     t.string   "name"
     t.text     "description"
@@ -90,6 +100,8 @@ ActiveRecord::Schema.define(version: 20131006231317) do
     t.datetime "updated_at"
     t.integer  "port"
     t.text     "log"
+    t.string   "vagrant_path"
+    t.integer  "pid"
   end
 
   add_index "machines", ["box_id"], name: "index_machines_on_box_id"

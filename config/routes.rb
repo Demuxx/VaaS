@@ -1,4 +1,6 @@
 VaasGit::Application.routes.draw do
+  resources :logs
+
   resources :chef_jsons
 
   resources :statuses

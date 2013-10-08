@@ -11,6 +11,11 @@
 </p>
 
 <p>
+  <strong>Vagrant File:</strong>
+  <a href="data:text/plain;base64,<%= Base64.encode64(File.open(@machine.vagrant_path, 'r').read) %>">Download</a>
+</p>
+
+<p>
   <strong>Box:</strong>
   <%= @machine.box.name %>
 </p>
@@ -26,33 +31,51 @@
 </p>
 
 <p>
+  <strong>Logs:</strong>
+  <div class="shift-right">
+  <% for log in @machine.logs %>
+	<p>
+		<strong>Name:</strong>
+		<%= link_to log.name, log_path(log) %>
+	</p>
+  <% end %>
+  </div>
+</p>
+
+<p>
   <strong>Bashes:</strong>
+  <div class="shift-right">
   <% for bash in @machine.bashes %>
 	<p>
 		<strong>Name:</strong>
 		<%= bash.name %>
 	</p>
   <% end %>
+  </div>
 </p>
 
 <p>
   <strong>Chefs:</strong>
+  <div class="shift-right">
   <% for chef in @machine.chefs %>
 	<p>
 		<strong>Name:</strong>
 		<%= chef.name %>
 	</p>
   <% end %>
+  </div>
 </p>
 
 <p>
   <strong>Puppets:</strong>
+  <div class="shift-right">
   <% for puppet in @machine.puppets %>
 	<p>
 		<strong>Name:</strong>
 		<%= puppet.name %>
 	</p>
   <% end %>
+  </div>
 </p>
 
 <p>

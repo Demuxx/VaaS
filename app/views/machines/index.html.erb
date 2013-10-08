@@ -29,7 +29,7 @@
         <td><%= machine.network.name %></td>
         <td><%= machine.key.name %></td>
         <td bgcolor="<%= machine.status.color %>"><%= link_to machine.status.name, toggle_machine_path(machine), :method => :get %></td>
-        <td><%= machine.port %></td>
+        <td><%= machine.get_port %></td>
 		<td><%= machine.bashes.count %></td>
 		<td><%= machine.chefs.count %></td>
 		<td><%= machine.puppets.count %></td>

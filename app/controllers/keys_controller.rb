@@ -55,7 +55,7 @@ class KeysController < ApplicationController
   # DELETE /keys/1
   # DELETE /keys/1.json
   def destroy
-    
+    FileUtils.rm_f(@key.path)
     @key.destroy
     respond_to do |format|
       format.html { redirect_to keys_url }

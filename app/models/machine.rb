@@ -9,11 +9,23 @@ class Machine < ActiveRecord::Base
   has_many :puppets, through: :puppet_machines
   has_many :bash_machines
   has_many :bashes, through: :bash_machines
+  has_many :logs, dependent: :destroy
 
   def get_status
     path = Rails.root.join("vms", "#{self.id}")
     output = `cd #{path}; vagrant status`
     status_string = /([a-z]+[\ ]+)([^\(]+)([\(])/.match(output.split("\n")[2])[2].strip!
+    if !self.pid.nil?
+      begin
+        Process.kill(0, self.pid)
+        return Status.where(name: "Pending Action").first
+      rescue Errno::EPERM
+        raise "No permissions to query the process."
+      rescue Errno::ESRCH
+      rescue
+        raise "Unable to check process status"
+      end
+    end
     case status_string
     when "running"
       puts "running"
@@ -45,7 +57,7 @@ class Machine < ActiveRecord::Base
   def vagrant_init
     path = Rails.root.join("vms", "#{self.id}")
     FileUtils.mkdir_p(path)
-    spawn("cd #{path}; vagrant init #{self.box.name} #{self.box.url}", :out=>[self.log, "w"])
+    spawn("cd #{path}; vagrant init #{self.box.name} #{self.box.url}", [:out, :err]=>[self.log, "w"])
     #raise "Init command failed!" if !command
   end
 
@@ -69,22 +81,27 @@ class Machine < ActiveRecord::Base
 
   def up
     path = Rails.root.join("vms", "#{self.id}")
-    output = spawn("cd #{path}; vagrant up --no-provision", :out=>[self.log, "w"])
+    self.pid = spawn("cd #{path}; vagrant up --no-provision", [:out, :err]=>[self.log, "w"])
+    self.status = Status.where(name: "")
+    self.save
   end
 
   def suspend
     path = Rails.root.join("vms", "#{self.id}")
-    output = spawn("cd #{path}; vagrant suspend", :out=>[self.log, "w"])
+    self.pid = spawn("cd #{path}; vagrant suspend", [:out, :err]=>[self.log, "w"])
+    self.save
   end
 
   def provision
     path = Rails.root.join("vms", "#{self.id}")
-    output = spawn("cd #{path}; vagrant provision", :out=>[self.log, "w"])
+    self.pid = spawn("cd #{path}; vagrant provision", [:out, :err]=>[self.log, "w"])
+    self.save
   end
 
   def up_provision
     path = Rails.root.join("vms", "#{self.id}")
-    output = spawn("cd #{path}; vagrant up --provision", :out=>[self.log, "w"])
+    self.pid = spawn("cd #{path}; vagrant up --provision", [:out, :err]=>[self.log, "w"])
+    self.save
   end
 
   private
