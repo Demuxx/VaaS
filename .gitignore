@@ -13,6 +13,7 @@
 # VaaS specific
 /vms/*
 /uploads/*
+*.box
 
 # bundler state
 /.bundle
