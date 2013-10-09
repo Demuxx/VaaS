@@ -8,7 +8,16 @@ get '/' do
   return "<h1>hi there</h1>"
 end
 
-post '/' do
+post '/upload' do
+  signature = Base64.decode64(params[:signature])
+  file = params[:file]
+  path = params[:path]
+  timestamp = params[:timestamp]
+  return unless validate(signature, (path+file), timestamp)
+  return unless check_window(timestamp)
+end
+
+post '/command' do
   signature = Base64.decode64(params[:signature])
   message = params[:message]
   timestamp = params[:timestamp]
