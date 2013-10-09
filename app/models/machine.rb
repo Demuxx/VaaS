@@ -1,4 +1,7 @@
 class Machine < ActiveRecord::Base
+  after_create dirs("create")
+  before_destroy dirs("destroy")
+  
   belongs_to :box
   belongs_to :network
   belongs_to :key
@@ -24,6 +27,26 @@ class Machine < ActiveRecord::Base
         sleep(1)
       end
     end
+  end
+  
+  def dirs(method)
+    case method
+    when "create"
+      root = Rails.root
+      FileUtils.mkdir_p(root.join("vms", @machine.id.to_s, "logs"))
+      FileUtils.mkdir_p(root.join("uploads", @machine.id.to_s, "bashes"))
+      FileUtils.mkdir_p(root.join("uploads", @machine.id.to_s, "chefs"))
+      FileUtils.mkdir_p(root.join("uploads", @machine.id.to_s, "puppets"))
+    end
+    
+  end
+  
+  def vagrant_path
+    Rails.root.join("vms", @machine.id.to_s, "Vagrantfile").to_s
+  end
+  
+  def logs_path
+    Rails.root.join("vms", "#{@machine.id}", "logs")
   end
 
   def vagrant_init

@@ -29,8 +29,6 @@ class MachinesController < ApplicationController
 
     respond_to do |format|
       if @machine.save
-        @machine.vagrant_path = Rails.root.join("vms", @machine.id.to_s, "Vagrantfile").to_s
-        @machine.save
         path = Rails.root.join("vms", "#{@machine.id}")
         FileUtils.remove_dir(path) if File.directory?(path)
         logs_path = Rails.root.join("vms", "#{@machine.id}", "logs")
