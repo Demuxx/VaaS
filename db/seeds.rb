@@ -32,7 +32,9 @@ Status.create(
     {name: "Not Created", color: "#0000FF"},
     {name: "Restarting", color: "#FFFF00"},
     {name: "Off", color: "#999999"},
-    {name: "Pending Action", color: "#00CC99"},
+    {name: "Pending Process", color: "#00CC99"},
     {name: "Unknown", color: "#CC0000"}
   ]
 )
+
+Key.generate_server_key

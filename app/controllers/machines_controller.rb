@@ -40,7 +40,6 @@ class MachinesController < ApplicationController
         @machine.log = log.path
         @machine.vagrant_init
         @machine.generate_vagrant
-        @machine.up
 
         format.html { redirect_to @machine, notice: 'Machine was successfully created.' }
         format.json { render action: 'show', status: :created, location: @machine }
@@ -61,7 +60,6 @@ class MachinesController < ApplicationController
         @machine.log = log.path
         @machine.vagrant_init
         @machine.generate_vagrant
-        @machine.status = @machine.get_status
         @machine.save!
 
         format.html { redirect_to @machine, notice: 'Machine was successfully updated.' }
@@ -90,7 +88,7 @@ class MachinesController < ApplicationController
     log = Log.new(machine_id: @machine.id, name: Time.now.to_s, path: Rails.root.join("vms", @machine.id.to_s, "logs", Time.now.to_s).to_s)
     log.save
     @machine.log = log.path
-    if @machine.get_status != Status.where(name: "Up").first
+    if @machine.status != Status.where(name: "Up").first
       @machine.up
     else
       @machine.suspend
@@ -100,7 +98,6 @@ class MachinesController < ApplicationController
 
   def provision
     logs_path = Rails.root.join("vms", "#{@machine.id}", "logs")
-    @machine.status = @machine.get_status
     @machine.save!
     log = Log.new(machine_id: @machine.id, name: Time.now.to_s, path: Rails.root.join("vms", @machine.id.to_s, "logs", Time.now.to_s).to_s)
     log.save

@@ -11,58 +11,31 @@ class Machine < ActiveRecord::Base
   has_many :bashes, through: :bash_machines
   has_many :logs, dependent: :destroy
 
-  def get_status
-    path = Rails.root.join("vms", "#{self.id}")
-    output = `cd #{path}; vagrant status`
-    status_string = /([a-z]+[\ ]+)([^\(]+)([\(])/.match(output.split("\n")[2])[2].strip!
-    if !self.pid.nil?
-      begin
-        Process.kill(0, self.pid)
-        return Status.where(name: "Pending Action").first
-      rescue Errno::EPERM
-        raise "No permissions to query the process."
-      rescue Errno::ESRCH
-      rescue
-        raise "Unable to check process status"
+  def self.poll_status
+    while true
+      for machine in Machine.all
+        begin
+          machine.status = machine.get_metadata
+          puts machine.status.name
+          machine.port = machine.get_port if ["Up", "Down"].include?(machine.status.name)
+          machine.save
+        rescue
+        end
+        sleep(1)
       end
     end
-    case status_string
-    when "running"
-      puts "running"
-      return Status.where(name: "Up").first
-    when "saved"
-      puts "saved"
-      return Status.where(name: "Down").first
-    when "not created"
-      puts "not created"
-      return Status.where(name: "Not Created").first
-    when "poweroff"
-      puts "poweroff"
-      return Status.where(name: "Off").first
-    when "restarting"
-      puts "restarting"
-      return Status.where(name: "Restarting").first
-    else
-      puts "unknown"
-      return Status.where(name: "Unknown").first
-    end
-  end
-
-  def get_port
-    path = Rails.root.join("vms", "#{self.id}")
-    output = `cd #{path}; vagrant ssh-config`
-    return /(Port\ )(.*)/.match(output.split("\n")[3])[2] if !output.empty?
   end
 
   def vagrant_init
     path = Rails.root.join("vms", "#{self.id}")
     FileUtils.mkdir_p(path)
-    spawn("cd #{path}; vagrant init #{self.box.name} #{self.box.url}", [:out, :err]=>[self.log, "w"])
+    pid = spawn("cd #{path}; vagrant init #{self.box.name} #{self.box.url}", [:out, :err]=>[self.log, "w"])
+    Process.detach(pid)
     #raise "Init command failed!" if !command
   end
 
   def generate_vagrant
-    create_vagrant_file(self)
+    pin_vagrant_key_file(self)
     dst = Rails.root.join("vms", "#{self.id}")
 
     for bash in self.bashes
@@ -81,30 +54,94 @@ class Machine < ActiveRecord::Base
 
   def up
     path = Rails.root.join("vms", "#{self.id}")
+    create_vagrant_file(self)
     self.pid = spawn("cd #{path}; vagrant up --no-provision", [:out, :err]=>[self.log, "w"])
-    self.status = Status.where(name: "")
+    Process.detach(self.pid)
+    self.status = Status.where(name: "Pending Action").first
     self.save
   end
 
   def suspend
     path = Rails.root.join("vms", "#{self.id}")
     self.pid = spawn("cd #{path}; vagrant suspend", [:out, :err]=>[self.log, "w"])
+    Process.detach(self.pid)
     self.save
   end
 
   def provision
-    path = Rails.root.join("vms", "#{self.id}")
-    self.pid = spawn("cd #{path}; vagrant provision", [:out, :err]=>[self.log, "w"])
-    self.save
+    
   end
 
   def up_provision
     path = Rails.root.join("vms", "#{self.id}")
     self.pid = spawn("cd #{path}; vagrant up --provision", [:out, :err]=>[self.log, "w"])
+    Process.detach(self.pid)
     self.save
+  end
+  
+  def get_port
+    path = Rails.root.join("vms", "#{self.id}")
+    output = `cd #{path}; vagrant ssh-config`
+    return /(Port\ )(.*)/.match(output.split("\n")[3])[2] if !output.nil? and !output.empty?
+  end
+  
+  def get_metadata
+    path = Rails.root.join("vms", "#{self.id}")
+    output = `cd #{path}; vagrant status`
+    status_string = /([a-z]+[\ ]+)([^\(]+)([\(])/.match(output.split("\n")[2])[2].strip!
+    return Status.where(name: "Pending Process") if !self.pid.nil? and pid_running?(self.pid)
+    case status_string
+    when "running"
+      return Status.where(name: "Up").first
+    when "saved"
+      return Status.where(name: "Down").first
+    when "not created"
+      return Status.where(name: "Not Created").first
+    when "poweroff"
+      return Status.where(name: "Off").first
+    when "restarting"
+      return Status.where(name: "Restarting").first
+    else
+      return Status.where(name: "Unknown").first
+    end
   end
 
   private
+  def command(machine, cmd, log)
+    path = Rails.root.join("vms", "#{machineid}")
+    self.pid = spawn("cd #{path}; vagrant provision", [:out, :err]=>[log, "w"])
+    Process.detach(self.pid)
+    self.save
+  end
+  
+  def pid_running?(pid)
+    begin
+      Process.kill(0, pid)
+      return true
+    rescue Errno::EPERM
+      raise "No permissions to query the process."
+    rescue Errno::ESRCH
+      return false
+    rescue
+      raise "Unable to check process status"
+    end
+  end
+  
+  def pin_vagrant_key_file(machine)
+    template = File.open(Rails.root.join('app', 'assets', 'vagrant_templates', 'vagrant_key_pinning.erb'))
+    erb = ERB.new(template.read)
+    vm_path = Rails.root.join("vms", "#{machine.id}", "Vagrantfile")
+    key = File.open(Rails.root.join("server_keys", "public"), "r").read
+    box = machine.box.name
+    box_url = machine.box.url
+    File.open(vm_path, 'w') do |f|
+      f.write erb.result( binding )
+    end
+    FileUtils.mkdir_p(Rails.root.join("vms", machine.id.to_s, "logs").to_s)
+    pin_pid = spawn("cd #{vm_path}; vagrant up", [:out, :err]=>[machine.log, "w"])
+    Process.detach(pin_pid)
+  end
+  
   def create_vagrant_file(machine)
     template = File.open(Rails.root.join('app', 'assets', 'vagrant_templates', 'vagrantfile.erb'))
     erb = ERB.new(template.read)
