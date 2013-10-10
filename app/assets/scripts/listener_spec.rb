@@ -3,6 +3,7 @@ require 'base64'
 require 'rest_client'
 
 def upload
+  generate_keys if !File.exists?('private_key.pem')
   key = OpenSSL::PKey::RSA.new File.read 'private_key.pem'
   timestamp = Time.now.to_s
   filename = "app.zip"
@@ -12,12 +13,18 @@ def upload
   message = filename+b64_file+timestamp
   signature = Base64.encode64(key.sign(digest, message))
   response = RestClient.post(
-    'http://10.236.2.225:4567/upload', 
+    'http://192.168.1.153:4567/upload', 
     {:b64_file => b64_file, :filename => filename, :signature => signature, :timestamp => timestamp}, 
     :multipart => true, :content_type => "multipart/form-data"
     )
   file.close
   puts response.body
+end
+
+def generate_keys
+  key = OpenSSL::PKey::RSA.new 2048
+  open 'private_key.pem', 'w' do |io|  io.write key.to_pem end
+  open 'public_key.pem', 'w' do |io| io.write key.public_key.to_pem end
 end
 
 upload

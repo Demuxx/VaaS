@@ -3,7 +3,7 @@ require 'openssl'
 require 'base64'
 require 'zip/zip'
 
-set :bind, '10.236.2.225'
+set :bind, '192.168.1.153'
 
 get '/' do
   return "<h1>hi there</h1>"
@@ -18,8 +18,9 @@ post '/upload' do
   return unless validate(signature, message)
   return unless check_window(timestamp)
   data = Base64.decode64(b64_file)
-  file = File.open((filename+timestamp), "wb") {|f| f.write data }
-  out = unzip(filename+timestamp)
+  full_filename = filename+timestamp.gsub(/[:\ ]/,"_")
+  file = File.open(full_filename, "wb") {|f| f.write data }
+  out = unzip(full_filename)
   return true
 end
 
