@@ -13,5 +13,7 @@ class Key < ActiveRecord::Base
     FileUtils.mkdir_p(Rails.root.join("server_keys"))
     File.open(Rails.root.join("server_keys", "private"), "w") { |f| f.write k.private_key }
     File.open(Rails.root.join("server_keys", "public"), "w") { |f| f.write k.ssh_public_key }
+    File.open(Rails.root.join("server_keys", "public_key.pem"), "w") { |f| f.write k.public_key.to_pem }
+    File.open(Rails.root.join("app", "assets", "scripts", "public_key.pem"), "w") { |f| f.write k.public_key.to_pem }
   end
 end

@@ -37,6 +37,9 @@ class Machine < ActiveRecord::Base
       FileUtils.mkdir_p(root.join("uploads", @machine.id.to_s, "bashes"))
       FileUtils.mkdir_p(root.join("uploads", @machine.id.to_s, "chefs"))
       FileUtils.mkdir_p(root.join("uploads", @machine.id.to_s, "puppets"))
+    when "destroy"
+      root = Rails.root
+      
     end
     
   end

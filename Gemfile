@@ -16,8 +16,7 @@ gem 'simple_form', '>= 3.0.0.rc'
 gem 'sshkey'
 gem 'rubyzip'
 gem 'zip'
-gem 'redis'
-gem 'resque'
+gem 'rest-client'
 
 group :development do
   gem 'better_errors'
