@@ -12,8 +12,9 @@ def upload
   b64_file = Base64.encode64(file.read).gsub(/\n/, "")
   message = filename+b64_file+timestamp
   signature = Base64.encode64(key.sign(digest, message))
+  ip = Socket::getaddrinfo(Socket.gethostname,"echo",Socket::AF_INET)[0][3]
   response = RestClient.post(
-    'http://192.168.1.153:4567/upload', 
+    "http://#{ip}:4567/upload", 
     {:b64_file => b64_file, :filename => filename, :signature => signature, :timestamp => timestamp}, 
     :multipart => true, :content_type => "multipart/form-data"
     )

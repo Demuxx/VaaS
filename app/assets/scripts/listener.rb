@@ -2,8 +2,11 @@ require 'sinatra'
 require 'openssl'
 require 'base64'
 require 'zip/zip'
+require 'socket'
+require 'pathname'
 
-set :bind, '192.168.1.153'
+ip = Socket::getaddrinfo(Socket.gethostname,"echo",Socket::AF_INET)[0][3]
+set :bind, ip
 
 get '/' do
   return "<h1>hi there</h1>"
@@ -11,26 +14,31 @@ end
 
 post '/upload' do
   signature = Base64.decode64(params[:signature])
-  b64_file = params[:b64_file]
-  filename = params[:filename]
-  timestamp = params[:timestamp]
-  message = filename+b64_file+timestamp
+  message = params[:filename]+params[:b64_file]+params[:timestamp]
   return unless validate(signature, message)
-  return unless check_window(timestamp)
-  data = Base64.decode64(b64_file)
-  full_filename = filename+timestamp.gsub(/[:\ ]/,"_")
+  return unless check_window(params[:timestamp])
+  data = Base64.decode64(params[:b64_file])
+  full_filename = params[:filename]+params[:timestamp].gsub(/[:\ ]/,"_")
   file = File.open(full_filename, "wb") {|f| f.write data }
   out = unzip(full_filename)
   return true
 end
 
-post '/command' do
-  signature = Base64.decode64(params[:signature])
-  message = params[:message]
-  timestamp = params[:timestamp]
-  return unless validate(signature, (message+timestamp))
-  return unless check_window(timestamp)
-  return system("#{message}")
+post '/up' do
+  machine_id = find_machine(params[:machine_id])
+  return unless machine_id
+  fork do
+    FileUtils.touch(Pathname.new("#{machine_id}").join("building"))
+    sleep(10)
+    FileUtils.rm_f(Pathname.new("#{machine_id}").join("building"))
+  end
+  return system("cd #{machine_id}; vagrant up")
+end
+
+post '/down' do
+  machine_id = find_machine(params[:machine_id])
+  return unless machine_id
+  return system("cd #{machine_id}; vagrant down")
 end
 
 private
@@ -53,11 +61,21 @@ def check_window(timestamp)
   return false
 end
 
+def find_machine(id)
+  signature = Base64.decode64(params[:signature])
+  return false unless validate(signature, (params[:machine_id]+params[:timestamp]))
+  return false unless check_window(params[:timestamp])
+  machine = /[0-9]+/.match(id)[0].to_i
+  return machine if !machine.nil?
+  status 500
+  body "Invalid machine id"
+  return false
+end
+
 def unzip(file)
   Zip::ZipFile.open(file) do |zip|
     zip.each do |entry|
       next if entry.name =~ /__MACOSX/ or entry.name =~ /\.DS_Store/ or !entry.file?
-
       begin
        entry_path = File.join(entry.name)
        FileUtils.mkdir_p(File.dirname(entry_path))
@@ -69,7 +87,6 @@ def unzip(file)
        file.class.class_eval { attr_accessor :original_filename, :content_type }
        file.original_filename = entry.name
        file.content_type = MIME::Types.type_for(entry.name)
-
        file_path = File.join(dst, file.original_filename)
        FileUtils.mkdir_p(File.dirname(file_path))
        File.open(file_path, 'w') do |f|
