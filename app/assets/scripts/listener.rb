@@ -19,8 +19,8 @@ post '/upload' do
   return unless check_window(params[:timestamp])
   data = Base64.decode64(params[:b64_file])
   full_filename = params[:filename]+params[:timestamp].gsub(/[:\ ]/,"_")
-  file = File.open(full_filename, "wb") {|f| f.write data }
-  out = unzip(full_filename)
+  File.open(full_filename, "wb") {|f| f.write data }
+  unzip(full_filename)
   return true
 end
 
@@ -35,10 +35,28 @@ post '/up' do
   return system("cd #{machine_id}; vagrant up")
 end
 
-post '/down' do
+post '/suspend' do
   machine_id = find_machine(params[:machine_id])
   return unless machine_id
-  return system("cd #{machine_id}; vagrant down")
+  return system("cd #{machine_id}; vagrant suspend")
+end
+
+post '/halt' do
+  machine_id = find_machine(params[:machine_id])
+  return unless machine_id
+  return system("cd #{machine_id}; vagrant halt")
+end
+
+post '/destroy' do
+  machine_id = find_machine(params[:machine_id])
+  return unless machine_id
+  return system("cd #{machine_id}; vagrant destroy")
+end
+
+post '/reload' do
+  machine_id = find_machine(params[:machine_id])
+  return unless machine_id
+  return system("cd #{machine_id}; vagrant reload --provision")
 end
 
 private
